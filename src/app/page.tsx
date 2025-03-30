@@ -1,103 +1,180 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { IRecipe } from "@/types/recipe.type";
+import { IExchangeRateResponse } from "@/types/conversionRate.type";
+import RecipeCard from "@/components/custom/RecipeCard";
+import RecipeDetails from "@/components/custom/RecipeDetails";
+import { useRandomRecipes, useRecipeDetails, useSearchRecipes } from "@/hooks/useRecipes";
+import { useDebounce } from "@/hooks/useDebounce";
+import { EmptyState } from "@/components/custom/EmptyState";
+import { ArrowLeft, ArrowRight, Utensils } from "lucide-react";
+import RecipeCardSkeletonLoader from "@/components/skeletons/RecipeCardsLoader";
+import cookingAnimation from "@/animations/cooking.json";
+import plateAnimation from "@/animations/plate.json";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
+
+export default function FoodInquiryApp() {
+  const [query, setQuery] = useState("");
+  const [selectedRecipeId, setSelectedRecipeId] = useState<number | undefined>(undefined);
+  const [usdToNaira, setUsdToNaira] = useState<number | null>(null);
+  const [showRecipeDetailPopup, setShowRecipeDetailPopup] = useState(false);
+  const [showConversionPopup, setShowConversionPopup] = useState(false);
+  const [convertedPrice, setConvertedPrice] = useState<string | null>(null);
+
+  const [openedRecipeConversionPrice, setOpenRecipeConversionPrice] = useState<IRecipe | null>(null)
+
+  const [page, setPage] = useState(1); // Track the current page
+
+  const debouncedQuery = useDebounce(query, 1000);
+
+  const { data: randomRecipes, isLoading: isRandomRecipesLoading } = useRandomRecipes();
+  const { data: searchResults, isLoading: isSearchLoading } = useSearchRecipes(debouncedQuery, page);
+
+  const { data: recipeDetails, isLoading: isDetailLoading } = useRecipeDetails(selectedRecipeId);
+
+  const recipes: IRecipe[] = query ? searchResults : randomRecipes;
+
+  const router = useRouter()
+  
+
+  useEffect(() => {
+    fetch("https://api.exchangerate-api.com/v4/latest/USD")
+      .then((res) => res.json())
+      .then((data: IExchangeRateResponse) => setUsdToNaira(data.rates.NGN));
+  }, []);
+
+  const fetchRecipeDetails = async (id: number) => {
+    setSelectedRecipeId(id);
+    setShowRecipeDetailPopup(true);
+  };
+
+  const handleConversion = (price: number, recipe: IRecipe) => {
+    if (usdToNaira) {
+      setConvertedPrice((price / usdToNaira).toFixed(2));
+      setShowConversionPopup(true);
+      setOpenRecipeConversionPrice(recipe)
+    }
+  };
+
+  const onclose = (popUpType: "details" | "conversion") => {
+    if (popUpType === "details") setShowRecipeDetailPopup(false);
+    if (popUpType === "conversion") {
+      setShowConversionPopup(false)
+      setOpenRecipeConversionPrice(null)
+    }
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="p-6 max-w-4xl mx-auto text-center">\
+      <div className="w-40 mx-auto mb-4">
+        <Lottie animationData={cookingAnimation} loop />
+      </div>
+      <motion.h1
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+        className="text-purple-600 text-4xl font-bold mb-6"
+      >
+        Miss Ore's Food Inquiry
+      </motion.h1>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {usdToNaira !== null ? (
+        <p className="text-gray-600 mb-4">
+          Current Exchange Rate: <span className="font-bold text-purple-700">$1 = ₦{usdToNaira.toFixed(2)}</span>
+        </p>
+      ) : (
+        <p className="text-gray-500 mb-4">Fetching exchange rate...</p>
+      )}
+
+      <div className="flex gap-2 mb-6">
+        <input
+          type="text"
+          placeholder="Search recipes..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="border p-3 rounded-md w-full"
+        />
+        {/* <Button onClick={fetchRecipes}>Search</Button> */}
+      </div>
+
+      <div className="relative">
+        <div className="flex items-center justify-center mb-4">
+          <h2 className="text-2xl font-semibold mb-4 text-purple-700">Trending Recipes 🍽️</h2>
+          <Lottie className="w-16" animationData={plateAnimation} loop />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+
+        <div className="absolute top-0 right-0">
+          <Button onClick={() => router.push('/resturants')} className="bg-purple-600 text-white cursor-pointer hover:bg-purple-700 transition-all">Resturants near me</Button>
+        </div>
+      </div>
+
+      {isRandomRecipesLoading || isSearchLoading || !recipes ? 
+        <RecipeCardSkeletonLoader />
+        : 
+        recipes?.length === 0 ? <EmptyState title="No recipe found" description="Try adjusting your search and try again" icon={Utensils} /> : 
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {recipes?.map((recipe) => (
+            <RecipeCard
+              key={recipe.id}
+              recipe={recipe}
+              convertedPrice={convertedPrice}
+              fetchRecipeDetails={fetchRecipeDetails}
+              handleConversion={handleConversion}
+              showConversionPopup={showConversionPopup}
+              onClose={onclose}
+            />
+          ))}
+        </div>
+      }
+
+      {/* Pagination Controls */}
+      <div className="flex justify-between items-center mt-6">
+        <button
+          className="p-3 bg-gray-300 text-gray-700 rounded-lg disabled:opacity-50 flex items-center cursor-pointer"
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          disabled={page === 1}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          <ArrowLeft className="w-5 h-5 mr-1" /> Previous
+        </button>
+
+        <span className="text-lg font-semibold text-purple-700">Page {page}</span>
+
+        <button
+          className="p-3 bg-purple-600 text-white rounded-lg disabled:opacity-50 flex items-center cursor-pointer"
+          onClick={() => setPage((prev) => prev + 1)}
+          disabled={recipes?.length === 0} // Disable if no more recipes
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          Next <ArrowRight className="w-5 h-5 ml-1" />
+        </button>
+      </div>
+
+      {showRecipeDetailPopup && selectedRecipeId && (
+        <RecipeDetails selectedRecipe={recipeDetails} onClose={onclose} />
+      )}
+
+      {showConversionPopup &&
+        <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            style={{background: "rgba(0, 0, 0, 0.7)"}}
+            className="fixed inset-0 flex items-center justify-center p-4"
         >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            <div className="bg-white p-6 rounded-lg shadow-2xl max-w-md w-full">
+                <h2 className="text-xl font-bold text-purple-700 mb-4">{openedRecipeConversionPrice?.title}</h2>
+                <p className="text-gray-600">Converted Price: <span className="font-bold">${convertedPrice} USD</span></p>
+                <Button onClick={() => {onclose("conversion"); setOpenRecipeConversionPrice(null)}} className="mt-4 bg-purple-600 text-white w-full">
+                    Close
+                </Button>
+            </div>
+        </motion.div>
+      }
     </div>
   );
 }
