@@ -29,7 +29,7 @@ export default function FoodInquiryApp() {
 
   const [openedRecipeConversionPrice, setOpenRecipeConversionPrice] = useState<IRecipe | null>(null)
 
-  const [page, setPage] = useState(1); // Track the current page
+  const [page, setPage] = useState(1);
 
   const debouncedQuery = useDebounce(query, 1000);
 
@@ -113,7 +113,7 @@ export default function FoodInquiryApp() {
 
       <div className="relative">
         <div className="flex items-center justify-center mb-4">
-          <h2 className="text-2xl font-semibold mb-4 text-purple-700">Trending Recipes 🍽️</h2>
+          <h2 className="text-2xl flex items-center gap-4 font-semibold mb-4 text-purple-700">Trending Recipes <Utensils /></h2>
           <Lottie className="w-16" animationData={plateAnimation} loop />
         </div>
 

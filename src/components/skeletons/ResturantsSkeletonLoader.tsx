@@ -13,7 +13,6 @@ const ResturantSkeletonCard = () => {
                 </div>
             </div>
             </div>
-            {/* Rating Placeholder */}
             <div className="w-10 h-4 bg-gray-200 rounded mt-3 sm:mt-0"></div>
         </div>
     )

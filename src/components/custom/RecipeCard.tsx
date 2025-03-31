@@ -1,7 +1,6 @@
 import { IRecipe } from "@/types/recipe.type";
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
-import { useState } from "react";
 
 interface RecipeCardProps { 
     recipe: IRecipe;
@@ -12,7 +11,7 @@ interface RecipeCardProps {
     showConversionPopup: boolean;
 }
 
-const RecipeCard = ({ recipe, fetchRecipeDetails, handleConversion, convertedPrice, onClose, showConversionPopup }: RecipeCardProps) => { 
+const RecipeCard = ({ recipe, fetchRecipeDetails, handleConversion }: RecipeCardProps) => { 
     return (
         <>
             <motion.div

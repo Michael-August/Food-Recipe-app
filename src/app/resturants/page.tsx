@@ -86,25 +86,21 @@ const RestaurantPage = () => {
                     <div className="grid gap-4">
                         {restaurants?.map((restaurant: any) => (
                             <div key={restaurant.id} className="bg-white p-5 rounded-2xl shadow-lg border border-gray-200 transition hover:shadow-xl flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                                {/* Left: Icon & Details */}
                                 <div className="flex items-start sm:items-center gap-4 w-full">
-                                    {/* Icon / Image Placeholder */}
                                     <div className="w-14 h-14 flex items-center justify-center bg-gray-100 rounded-xl">
                                         <MapPin size={24} className="text-purple-600" />
                                     </div>
-                                    {/* Text Info */}
                                     <div className="flex-1">
                                         <h2 className="text-lg sm:text-xl font-semibold text-gray-900">{restaurant?.tags?.name || "Unnamed Restaurant"}</h2>
                                         <p className="text-sm sm:text-base text-gray-500 flex items-center gap-2">
                                             <MapPin size={14} className="text-gray-400" /> {restaurant?.tags["addr:street"] || "No Address"}
                                         </p>
-                                        {/* Buttons */}
                                         <div className="flex flex-wrap gap-2 mt-3">
                                             <a href={`tel:${restaurant?.tags?.phone || "#"}`} className="flex items-center gap-2 bg-purple-600 text-white px-3 py-1.5 rounded-lg shadow-md hover:bg-purple-700 transition text-sm">
                                                 <Phone size={16} />
                                                 <span>Call</span>
                                             </a>
-                                            <a href={`https://www.google.com/maps/search/?api=1&query=${restaurant.lat},${restaurant.lon}`} className="flex items-center gap-2 bg-gray-600 text-white px-3 py-1.5 rounded-lg shadow-md hover:bg-gray-700 transition text-sm">
+                                            <a href={`https://www.google.com/maps/search/?api=1&query=${restaurant.lat},${restaurant.lon}`} target="_blank" className="flex items-center gap-2 bg-gray-600 text-white px-3 py-1.5 rounded-lg shadow-md hover:bg-gray-700 transition text-sm">
                                                 <MapIcon size={16} />
                                                 <span>Map</span>
                                             </a>
@@ -118,7 +114,6 @@ const RestaurantPage = () => {
                                     </div>
                                 </div>
 
-                                {/* Right: Rating (Stays at the bottom on mobile) */}
                                 <div className="flex items-center gap-1 text-yellow-500 text-lg font-semibold mt-3 sm:mt-0">
                                     <Star size={20} /> <span>4.5</span>
                                 </div>

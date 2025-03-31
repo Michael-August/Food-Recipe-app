@@ -13,15 +13,7 @@ const RecipeDetails = ({ selectedRecipe, onClose }: IRecipeDetailsProps) => {
     const [direction, setDirection] = useState<"left" | "right">("right");
 
     const variants = {
-        // enter: (direction: "left" | "right") => ({
-        //     opacity: 1,
-        //     x: direction === "right" ? 50 : -50, // Slide from left/right
-        // }),
-        // center: { opacity: 1, x: 0 }, // Show normally
-        // exit: (direction: "left" | "right") => ({
-        //     opacity: 1,
-        //     x: direction === "right" ? -50 : 50, // Slide out in opposite direction
-        // }),
+        
     };
 
     const nextStep = () => {
@@ -60,7 +52,6 @@ const RecipeDetails = ({ selectedRecipe, onClose }: IRecipeDetailsProps) => {
                     <X onClick={() => onClose("details")} className="cursor-pointer hover:scale-110 transition-all" />
                 </div>
                 <h2 className="text-xl font-bold text-purple-700 mb-4">{selectedRecipe?.title}</h2>
-                {/* <img src={selectedRecipe?.image} alt={selectedRecipe?.title} className="rounded mb-4" /> */}
                 <p className="text-gray-600">
                     Calories: {selectedRecipe?.nutrition?.nutrients?.find((n) => n.name === "Calories")?.amount} kcal
                 </p>
@@ -77,7 +68,6 @@ const RecipeDetails = ({ selectedRecipe, onClose }: IRecipeDetailsProps) => {
                 <h3 className="text-lg font-semibold mt-4">Instructions:</h3>
                 {instructionsArray.length > 0 ? (
                 <div className="relative flex items-center justify-center w-full">
-                    {/* Previous Button */}
                     <motion.button
                         onClick={(e) => { e.stopPropagation(); prevStep() }}
                         disabled={currentStep === 0}
@@ -98,23 +88,19 @@ const RecipeDetails = ({ selectedRecipe, onClose }: IRecipeDetailsProps) => {
                         custom={direction}
                         className="relative w-full h-64 flex items-center justify-center rounded-xl overflow-hidden"
                     >
-                        {/* Background Image */}
                         <img 
-                        src={selectedRecipe?.image} 
-                        alt="Recipe Step" 
-                        className="absolute inset-0 w-full h-full object-cover"
+                            src={selectedRecipe?.image} 
+                            alt="Recipe Step" 
+                            className="absolute inset-0 w-full h-full object-cover"
                         />
                         
-                        {/* Dark Overlay */}
                         <div style={{background: "rgba(0, 0, 0, 0.8)"}} className="absolute inset-0"></div>
                         
-                        {/* Instruction Text */}
                         <p className="relative text-white text-center px-6 text-lg font-medium">
                         {instructionsArray[currentStep]}
                         </p>
                     </motion.div>
 
-                    {/* Next Button */}
                     <motion.button
                         onClick={(e) => { e.stopPropagation(); nextStep() }}
                         disabled={currentStep === instructionsArray.length - 1}
@@ -126,17 +112,8 @@ const RecipeDetails = ({ selectedRecipe, onClose }: IRecipeDetailsProps) => {
                     </motion.button>
                 </div>
                 ) : (
-                <p className="text-gray-600">No instructions available.</p>
+                    <p className="text-gray-600">No instructions available.</p>
                 )}
-
-                {/* <motion.button
-                    onClick={() => onClose("details")}
-                    className="mt-4 bg-purple-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-purple-700 active:scale-95 transition-all"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                >
-                    Close
-                </motion.button> */}
             </div>
         </motion.div>
     );
