@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 export default function RecipeCardSkeletonLoader() {
   return (
-    <div className="grid grid-cols-3 gap-6 p-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {Array.from({ length: 6 }).map((_, index) => (
         <motion.div 
           key={index}

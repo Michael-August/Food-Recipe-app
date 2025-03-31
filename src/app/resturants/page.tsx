@@ -85,7 +85,7 @@ const RestaurantPage = () => {
                         restaurants?.length === 0 ? <EmptyState title="No resturant found" description="Maybe you should adjust your location" icon={Utensils} /> :
                     <div className="grid gap-4">
                         {restaurants?.map((restaurant: any) => (
-                            <div key={restaurant.id} className="bg-white p-5 rounded-2xl shadow-lg border border-gray-200 transition hover:shadow-xl flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                            <div key={restaurant.id} className="bg-white p-3 md:p-5 rounded-2xl shadow-lg border border-gray-200 transition hover:shadow-xl flex flex-col sm:flex-row sm:items-center sm:justify-between">
                                 <div className="flex items-start sm:items-center gap-4 w-full">
                                     <div className="w-14 h-14 flex items-center justify-center bg-gray-100 rounded-xl">
                                         <MapPin size={24} className="text-purple-600" />
@@ -96,17 +96,20 @@ const RestaurantPage = () => {
                                             <MapPin size={14} className="text-gray-400" /> {restaurant?.tags["addr:street"] || "No Address"}
                                         </p>
                                         <div className="flex flex-wrap gap-2 mt-3">
-                                            <a href={`tel:${restaurant?.tags?.phone || "#"}`} className="flex items-center gap-2 bg-purple-600 text-white px-3 py-1.5 rounded-lg shadow-md hover:bg-purple-700 transition text-sm">
-                                                <Phone size={16} />
+                                            <a href={`tel:${restaurant?.tags?.phone || "#"}`} className="flex items-center gap-1 md:gap-2 bg-purple-600 text-white px-2 md:px-3 py-1.5 rounded-lg shadow-md hover:bg-purple-700 transition text-xs md:text-sm">
+                                                <Phone className="hidden md:block" size={16} />
+                                                <Phone className="block md:hidden" size={12} />
                                                 <span>Call</span>
                                             </a>
-                                            <a href={`https://www.google.com/maps/search/?api=1&query=${restaurant.lat},${restaurant.lon}`} target="_blank" className="flex items-center gap-2 bg-gray-600 text-white px-3 py-1.5 rounded-lg shadow-md hover:bg-gray-700 transition text-sm">
-                                                <MapIcon size={16} />
+                                            <a href={`https://www.google.com/maps/search/?api=1&query=${restaurant.lat},${restaurant.lon}`} target="_blank" className="flex items-center gap-1 md:gap-2 bg-gray-600 text-white px-2 md:px-3 py-1.5 rounded-lg shadow-md hover:bg-gray-700 transition text-xs md:text-sm">
+                                                <MapIcon className="hidden md:block" size={16} />
+                                                <MapIcon className="block md:hidden" size={12} />
                                                 <span>Map</span>
                                             </a>
                                             {restaurant?.tags?.website && (
-                                                <a href={restaurant?.tags?.website} target="_blank" className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 rounded-lg shadow-md hover:bg-blue-700 transition text-sm">
-                                                    <Globe size={16} />
+                                                <a href={restaurant?.tags?.website} target="_blank" className="flex items-center gap-1 md:gap-2 bg-blue-600 text-white px-2 md:px-3 py-1.5 rounded-lg shadow-md hover:bg-blue-700 transition text-xs md:text-sm">
+                                                    <Globe className="hidden md:block" size={16} />
+                                                    <Globe className="block md:hidden" size={12} />
                                                     <span>Website</span>
                                                 </a>
                                             )}

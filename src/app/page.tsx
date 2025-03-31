@@ -9,11 +9,12 @@ import RecipeDetails from "@/components/custom/RecipeDetails";
 import { useRandomRecipes, useRecipeDetails, useSearchRecipes } from "@/hooks/useRecipes";
 import { useDebounce } from "@/hooks/useDebounce";
 import { EmptyState } from "@/components/custom/EmptyState";
-import { ArrowLeft, ArrowRight, Utensils, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, HelpCircleIcon, Info, Utensils, X } from "lucide-react";
 import RecipeCardSkeletonLoader from "@/components/skeletons/RecipeCardsLoader";
 import cookingAnimation from "@/animations/cooking.json";
 import plateAnimation from "@/animations/plate.json";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
@@ -89,12 +90,24 @@ export default function FoodInquiryApp() {
         transition={{ duration: 1 }}
         className="text-purple-950 text-sm font-bold"
       >
-        You can prepare it for yourself
+        You can prepare it yourself
       </motion.span>
 
       {usdToNaira !== null ? (
         <p className="text-gray-600 mb-4 mt-6">
-          Current Exchange Rate: <span className="font-bold text-purple-700">$1 = ₦{usdToNaira.toFixed(2)}</span>
+          Current Exchange Rate: <span className="font-bold text-purple-700">
+            $1 = ₦{usdToNaira.toFixed(2)}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="inline-flex items-center ml-2">
+                  <HelpCircleIcon size={16} className="text-gray-500 hover:text-gray-700 cursor-pointer" />
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="top" align="center" className="bg-gray-900 text-white px-3 py-1 rounded shadow-lg">
+                This is the latest exchange rate from our data provider.
+              </TooltipContent>
+            </Tooltip>
+          </span>
         </p>
       ) : (
         <p className="text-gray-500 mb-4">Fetching exchange rate...</p>
@@ -112,12 +125,15 @@ export default function FoodInquiryApp() {
       </div>
 
       <div className="relative">
+        <div className="md:hidden flex justify-end">
+          <Button onClick={() => router.push('/resturants')} className="bg-purple-600 text-white cursor-pointer hover:bg-purple-700 transition-all">Resturants near me</Button>
+        </div>
         <div className="flex items-center justify-center mb-4">
           <h2 className="text-2xl flex items-center gap-4 font-semibold mb-4 text-purple-700">Trending Recipes <Utensils /></h2>
           <Lottie className="w-16" animationData={plateAnimation} loop />
         </div>
 
-        <div className="absolute top-0 right-0">
+        <div className="absolute hidden md:block top-0 right-0">
           <Button onClick={() => router.push('/resturants')} className="bg-purple-600 text-white cursor-pointer hover:bg-purple-700 transition-all">Resturants near me</Button>
         </div>
       </div>
