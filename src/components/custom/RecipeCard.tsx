@@ -1,6 +1,7 @@
 import { IRecipe } from "@/types/recipe.type";
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface RecipeCardProps { 
     recipe: IRecipe;
@@ -31,7 +32,19 @@ const RecipeCard = ({ recipe, fetchRecipeDetails, handleConversion }: RecipeCard
                     />
                 </div>
                 <div className="p-4 flex flex-col items-center">
-                    <h3 className="text-lg font-bold text-purple-700">{recipe?.title}</h3>
+                    <h3 className="text-lg font-bold text-purple-700">
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                            <span className="cursor-pointer">
+                                {recipe?.title.length > 25 ? `${recipe.title.slice(0, 23)}...` : recipe.title}
+                            </span>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" align="center" className="bg-gray-900 flex flex-col gap-2 text-center text-white text-sm px-3 py-1 rounded shadow-lg">
+                                <span>{recipe?.title}</span>
+                                <span className="text-sm">Click to view details</span>
+                            </TooltipContent>
+                        </Tooltip>
+                    </h3>
                     <p className="text-gray-600 text-sm">Calories: {recipe?.calories} kcal</p>
                     <p className="text-gray-700 font-semibold">Price: <span className="text-purple-600">₦{recipe?.price}</span></p>
 
