@@ -21,7 +21,7 @@ const RecipeCard = ({ recipe, fetchRecipeDetails, handleConversion, convertedPri
                 animate={{ opacity: 1, scale: 1 }}
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.2 }}
-                className="bg-purple-50 shadow-xl rounded-2xl overflow-hidden border border-gray-200 hover:shadow-2xl transition-all cursor-pointer"
+                className="bg-purple-50 shadow-xl rounded-2xl overflow-hidden border border-gray-200 hover:shadow-2xl cursor-pointer"
                 onClick={() => fetchRecipeDetails(recipe?.id)}
             >
                 <div className="relative w-full h-40">
@@ -43,7 +43,7 @@ const RecipeCard = ({ recipe, fetchRecipeDetails, handleConversion, convertedPri
                         }}
                         className="mt-3 bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-purple-700 transition-all"
                     >
-                        Convert to USD
+                        Convert price to USD
                     </Button>
                 </div>
             </motion.div>
