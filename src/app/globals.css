@@ -112,6 +112,13 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Remove built in mapbox popup background */
+.mapboxgl-popup-content {
+  background: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

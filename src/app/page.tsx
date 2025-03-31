@@ -9,7 +9,7 @@ import RecipeDetails from "@/components/custom/RecipeDetails";
 import { useRandomRecipes, useRecipeDetails, useSearchRecipes } from "@/hooks/useRecipes";
 import { useDebounce } from "@/hooks/useDebounce";
 import { EmptyState } from "@/components/custom/EmptyState";
-import { ArrowLeft, ArrowRight, Utensils } from "lucide-react";
+import { ArrowLeft, ArrowRight, Utensils, X } from "lucide-react";
 import RecipeCardSkeletonLoader from "@/components/skeletons/RecipeCardsLoader";
 import cookingAnimation from "@/animations/cooking.json";
 import plateAnimation from "@/animations/plate.json";
@@ -71,7 +71,7 @@ export default function FoodInquiryApp() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto text-center">\
+    <div className="p-6 max-w-4xl mx-auto text-center">
       <div className="w-40 mx-auto mb-4">
         <Lottie animationData={cookingAnimation} loop />
       </div>
@@ -79,13 +79,21 @@ export default function FoodInquiryApp() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
-        className="text-purple-600 text-4xl font-bold mb-6"
+        className="text-purple-600 text-4xl font-bold"
       >
-        Miss Ore's Food Inquiry
+        Ore's Food Recipe
       </motion.h1>
+      <motion.span
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+        className="text-purple-950 text-sm font-bold"
+      >
+        You can prepare it for yourself
+      </motion.span>
 
       {usdToNaira !== null ? (
-        <p className="text-gray-600 mb-4">
+        <p className="text-gray-600 mb-4 mt-6">
           Current Exchange Rate: <span className="font-bold text-purple-700">$1 = ₦{usdToNaira.toFixed(2)}</span>
         </p>
       ) : (
@@ -167,11 +175,11 @@ export default function FoodInquiryApp() {
             className="fixed inset-0 flex items-center justify-center p-4"
         >
             <div className="bg-white p-6 rounded-lg shadow-2xl max-w-md w-full">
+                <div className="flex items-end justify-end">
+                  <X onClick={() => {onclose("conversion"); setOpenRecipeConversionPrice(null)}} className="cursor-pointer hover:scale-110 transition-all" />
+                </div>
                 <h2 className="text-xl font-bold text-purple-700 mb-4">{openedRecipeConversionPrice?.title}</h2>
                 <p className="text-gray-600">Converted Price: <span className="font-bold">${convertedPrice} USD</span></p>
-                <Button onClick={() => {onclose("conversion"); setOpenRecipeConversionPrice(null)}} className="mt-4 bg-purple-600 text-white w-full">
-                    Close
-                </Button>
             </div>
         </motion.div>
       }
